@@ -1,25 +1,38 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
+import { SudokuProvider } from './context/SudokuContext';
 
-function App() {
+// Import all your page components here
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Selection from './pages/Selection';
+import NormalGame from './pages/NormalGame';
+import EasyGame from './pages/EasyGame';
+import Rules from './pages/Rules';
+import HighScores from './pages/HighScores';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <SudokuProvider>
+      <BrowserRouter>
+        <Navbar />
+
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/games" element={<Selection />} />
+            <Route path="/games/normal" element={<NormalGame />} />
+            <Route path="/games/easy" element={<EasyGame />} />
+            <Route path="/rules" element={<Rules />} />
+            <Route path="/scores" element={<HighScores />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </main>
+      </BrowserRouter>
+    </SudokuProvider>
   );
 }
-
-export default App;
