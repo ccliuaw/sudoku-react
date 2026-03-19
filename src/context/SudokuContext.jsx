@@ -3,23 +3,34 @@ import React, { createContext, useState } from 'react';
 export const SudokuContext = createContext();
 
 export function SudokuProvider({ children }) {
-    // state 1: generate a empty 9x9 board (81 cells) with 0 representing empty cells
-    const [board, setBoard] = useState(Array(81).fill(0));
+    // Temporary mock data until we build the random generation logic
+    const mockBoardData = [
+        5, 3, 0, 0, 7, 0, 0, 0, 0,
+        6, 0, 0, 1, 9, 5, 0, 0, 0,
+        0, 9, 8, 0, 0, 0, 0, 6, 0
+    ];
+    // Fill the rest with 0s to make it 81 cells
+    const startingPuzzle = [...mockBoardData, ...Array(81 - mockBoardData.length).fill(0)];
 
-    // state 2: currently selected cell (index 0~80)
+    // 1. The current state of the board (changes when user types)
+    const [board, setBoard] = useState(startingPuzzle);
+    
+    // 2. The original puzzle (never changes during gameplay)
+    const [initialBoard, setInitialBoard] = useState(startingPuzzle); 
+    
     const [selectedCell, setSelectedCell] = useState(null);
 
-    // a helper function to update a specific cell's number
     const updateCell = (index, value) => {
         const newBoard = [...board];
         newBoard[index] = value;
         setBoard(newBoard);
     };
 
-    // a helper function to reset the board to its initial state
     const value = {
         board,
         setBoard,
+        initialBoard,     // Expose the original puzzle
+        setInitialBoard,
         selectedCell,
         setSelectedCell,
         updateCell

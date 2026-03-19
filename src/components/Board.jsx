@@ -3,19 +3,14 @@ import Cell from './Cell';
 import { SudokuContext } from '../context/SudokuContext';
 
 export default function Board() {
-    // get the board state from context
-    const { board } = useContext(SudokuContext);
+    // Pull BOTH the current board and the initial board from Context
+    const { board, initialBoard } = useContext(SudokuContext);
 
     return (
-        <div className="sudoku-board-9x9" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(9, 40px)', 
-            gap: '2px',
-            justifyContent: 'center',
-            margin: '20px'
-        }}>
+        <div className="sudoku-board-9x9">
             {board.map((num, index) => {
-                const isFixed = num > 0;
+                // BUG FIX: Check the initialBoard, NOT the current num!
+                const isFixed = initialBoard[index] > 0;
                 
                 return (
                     <Cell 

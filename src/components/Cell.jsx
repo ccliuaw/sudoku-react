@@ -15,13 +15,21 @@ export default function Cell({ value, isFixed, index }) {
 
         const inputValue = e.target.value;
         
-        if (inputValue === '' || /^[1-9]$/.test(inputValue)) {
-            const newValue = inputValue === '' ? 0 : parseInt(inputValue, 10);
-            updateCell(index, newValue);
+        // 1. Handle deletion (Backspace)
+        if (inputValue === '') {
+            updateCell(index, 0);
+            return;
+        }
+
+        // 2. Always grab the very last character typed
+        const lastChar = inputValue.slice(-1);
+        
+        // 3. Check if that last character is a valid number
+        if (/^[1-9]$/.test(lastChar)) {
+            updateCell(index, parseInt(lastChar, 10));
         }
     };
 
-    // Dynamically build the class name based on the current state
     let cellClassName = "cell";
     if (isFixed) {
         cellClassName += " fixed";
@@ -33,7 +41,6 @@ export default function Cell({ value, isFixed, index }) {
     return (
         <input 
             type="text"
-            maxLength="1" 
             className={cellClassName} 
             value={value === 0 ? '' : value} 
             readOnly={isFixed}

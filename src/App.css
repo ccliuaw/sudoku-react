@@ -258,3 +258,12 @@ input:not([readonly]) {
     background-color: #b3e5fc;
     border: 2px solid #0288d1;
 }
+
+/* Board Layout */
+.sudoku-board-9x9 {
+    display: grid;
+    grid-template-columns: repeat(9, 40px);
+    gap: 2px;
+    justify-content: center;
+    margin: 20px;
+}
