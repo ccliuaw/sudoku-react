@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { SudokuContext } from '../context/SudokuContext';
 
-export default function Cell({ value, isFixed, index }) {
+export default function Cell({ value, isFixed, index, boardSize }) {
     // Bring in conflicts from Context
     const { selectedCell, setSelectedCell, updateCell, conflicts } = useContext(SudokuContext);
 
@@ -11,8 +11,8 @@ export default function Cell({ value, isFixed, index }) {
     const isIncorrect = conflicts.includes(index);
 
     // Calculate row and column (0-indexed)
-    const row = Math.floor(index / 9);
-    const col = index % 9;
+    const row = Math.floor(index / boardSize);
+    const col = index % boardSize;
 
     const handleClick = () => {
         setSelectedCell(index);
@@ -30,7 +30,10 @@ export default function Cell({ value, isFixed, index }) {
 
         const lastChar = inputValue.slice(-1);
         
-        if (/^[1-9]$/.test(lastChar)) {
+        // Dynamic regex validation based on board size
+        const isValidInput = boardSize === 6 ? /^[1-6]$/.test(lastChar) : /^[1-9]$/.test(lastChar);
+        
+        if (isValidInput) {
             updateCell(index, parseInt(lastChar, 10));
         }
     };
@@ -41,9 +44,14 @@ export default function Cell({ value, isFixed, index }) {
     if (isSelected) cellClassName += " selected";
     if (isIncorrect) cellClassName += " incorrect";
 
-    // Add classes for 3x3 grid borders
-    if (col === 2 || col === 5) cellClassName += " border-right-thick";
-    if (row === 2 || row === 5) cellClassName += " border-bottom-thick";
+    // Dynamic thick borders
+    if (boardSize === 6) {
+        if (col === 2) cellClassName += " border-right-thick";
+        if (row === 1 || row === 3) cellClassName += " border-bottom-thick";
+    } else {
+        if (col === 2 || col === 5) cellClassName += " border-right-thick";
+        if (row === 2 || row === 5) cellClassName += " border-bottom-thick";
+    }
 
     return (
         <input 

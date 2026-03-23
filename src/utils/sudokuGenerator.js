@@ -129,3 +129,65 @@ export function generateNormalBoard() {
     // Convert the 2D array (9x9) back to a 1D array (81) for our React Context
     return board.flat();
 }
+
+// --- 6x6 Easy Mode Generator ---
+
+function isValid6x6(board, row, col, num) {
+    for (let i = 0; i < 6; i++) {
+        if (board[row][i] === num) return false;
+        if (board[i][col] === num) return false;
+    }
+
+    // 6x6 Sudoku uses 2x3 sub-grids
+    const startRow = Math.floor(row / 2) * 2;
+    const startCol = Math.floor(col / 3) * 3;
+    for (let r = 0; r < 2; r++) {
+        for (let c = 0; c < 3; c++) {
+            if (board[startRow + r][startCol + c] === num) return false;
+        }
+    }
+    return true;
+}
+
+function fillBoard6x6(board) {
+    for (let row = 0; row < 6; row++) {
+        for (let col = 0; col < 6; col++) {
+            if (board[row][col] === BLANK) {
+                const numbers = [1, 2, 3, 4, 5, 6];
+                numbers.sort(() => Math.random() - 0.5);
+
+                for (let num of numbers) {
+                    if (isValid6x6(board, row, col, num)) {
+                        board[row][col] = num;
+                        if (fillBoard6x6(board)) return true;
+                        board[row][col] = BLANK;
+                    }
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+export function generateEasyBoard() {
+    let board = Array.from({ length: 6 }, () => Array(6).fill(BLANK));
+    fillBoard6x6(board);
+
+    // 6x6 has 36 cells. Half the board is 18 clues, so we remove 18 cells.
+    let cellsToRemove = 18;
+    
+    // For simplicity in Easy Mode, we just randomly remove 18 cells 
+    // (6x6 is small enough that random removal usually leaves a solvable board)
+    while (cellsToRemove > 0) {
+        let row = Math.floor(Math.random() * 6);
+        let col = Math.floor(Math.random() * 6);
+
+        if (board[row][col] !== BLANK) {
+            board[row][col] = BLANK;
+            cellsToRemove--;
+        }
+    }
+
+    return board.flat();
+}

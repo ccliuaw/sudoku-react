@@ -1,44 +1,48 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react';
-import { generateNormalBoard } from '../utils/sudokuGenerator';
+import React, { createContext, useState, useMemo } from 'react';
+import { generateNormalBoard, generateEasyBoard } from '../utils/sudokuGenerator';
 
 export const SudokuContext = createContext();
 
 // Helper function to find all cells that violate Sudoku rules
 function getConflictingCells(board) {
     const conflicts = new Set();
-    
-    for (let i = 0; i < 81; i++) {
+    const size = Math.sqrt(board.length); // Will be 9 or 6
+
+    const boxRows = size === 6 ? 2 : 3;
+    const boxCols = size === 6 ? 3 : 3;
+
+    for (let i = 0; i < board.length; i++) {
         if (board[i] === 0) continue; // Skip empty cells
-        
-        const row = Math.floor(i / 9);
-        const col = i % 9;
+
+        const row = Math.floor(i / size);
+        const col = i % size;
         const num = board[i];
 
         // Check the entire row
-        for (let c = 0; c < 9; c++) {
-            if (c !== col && board[row * 9 + c] === num) {
+        for (let c = 0; c < size; c++) {
+            if (c !== col && board[row * size + c] === num) {
                 conflicts.add(i);
-                conflicts.add(row * 9 + c);
+                conflicts.add(row * size + c);
             }
         }
 
         // Check the entire column
-        for (let r = 0; r < 9; r++) {
-            if (r !== row && board[r * 9 + col] === num) {
+        for (let r = 0; r < size; r++) {
+            if (r !== row && board[r * size + col] === num) {
                 conflicts.add(i);
-                conflicts.add(r * 9 + col);
+                conflicts.add(r * size + col);
             }
         }
 
-        // Check the 3x3 sub-grid
-        const startRow = Math.floor(row / 3) * 3;
-        const startCol = Math.floor(col / 3) * 3;
-        for (let r = 0; r < 3; r++) {
-            for (let c = 0; c < 3; c++) {
+        // Check the 3x3 or 2x3 sub-grid
+        const startRow = Math.floor(row / boxRows) * boxRows;
+        const startCol = Math.floor(col / boxCols) * boxCols;
+        for (let r = 0; r < boxRows; r++) {
+            for (let c = 0; c < boxCols; c++) {
                 const checkRow = startRow + r;
                 const checkCol = startCol + c;
-                const checkIndex = checkRow * 9 + checkCol;
-                
+                const checkIndex = checkRow * size + checkCol;
+
                 if (checkIndex !== i && board[checkIndex] === num) {
                     conflicts.add(i);
                     conflicts.add(checkIndex);
@@ -46,24 +50,27 @@ function getConflictingCells(board) {
             }
         }
     }
-    
+
     return Array.from(conflicts); // Convert Set back to an array
 }
 
 export function SudokuProvider({ children }) {
-    const [board, setBoard] = useState(Array(81).fill(0));
-    const [initialBoard, setInitialBoard] = useState(Array(81).fill(0)); 
+    const [board, setBoard] = useState([]);
+    const [initialBoard, setInitialBoard] = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
 
-    useEffect(() => {
-        startNewGame();
-    }, []);
-
-    const startNewGame = () => {
+    const startNormalGame = () => {
         const newPuzzle = generateNormalBoard();
         setBoard(newPuzzle);
         setInitialBoard(newPuzzle);
-        setSelectedCell(null); 
+        setSelectedCell(null);
+    };
+
+    const startEasyGame = () => {
+        const newPuzzle = generateEasyBoard();
+        setBoard(newPuzzle);
+        setInitialBoard(newPuzzle);
+        setSelectedCell(null);
     };
 
     // Reset the board to its initial state
@@ -84,12 +91,12 @@ export function SudokuProvider({ children }) {
     const value = {
         board,
         setBoard,
-        initialBoard,     
-        setInitialBoard,
+        initialBoard,
         selectedCell,
         setSelectedCell,
         updateCell,
-        startNewGame,
+        startNormalGame,
+        startEasyGame,
         resetGame,
         conflicts // Export conflicts so Cell components can read it
     };

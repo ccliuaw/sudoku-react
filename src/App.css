@@ -312,3 +312,14 @@ input:not([readonly]) {
 .btn-reset:hover {
     background-color: #c0392b;
 }
+
+/* 6x6 Board Layout */
+.sudoku-board-6x6 {
+    display: grid;
+    grid-template-columns: repeat(6, 40px);
+    justify-content: center;
+    margin: 20px auto;
+    width: max-content;
+    gap: 0; 
+    border: 3px solid #2c3e50; 
+}
