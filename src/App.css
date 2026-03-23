@@ -89,11 +89,12 @@ h2 {
 /* We use a grid of grids to make the thick borders easy */
 .sudoku-board-9x9 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px; /* Thick subgrid borders */
-    background-color: var(--board-border);
-    border: 4px solid var(--board-border);
-    margin-bottom: 20px;
+    grid-template-columns: repeat(9, 40px); /* 9 columns of 40px each */
+    justify-content: center;
+    margin: 20px auto;
+    width: max-content;
+    gap: 0;
+    border: 3px solid #2c3e50;
 }
 
 .sudoku-board-6x6 {
@@ -121,12 +122,25 @@ h2 {
 .cell {
     width: 50px;
     height: 50px;
+    box-sizing: border-box;
+    margin: 0;
     text-align: center;
     font-size: 1.5rem;
-    border: none;
+    border: 1px solid #bdc3c7;
     outline: none;
+    cursor: pointer;
     background-color: white;
     color: var(--primary-color);
+    transition: background-color 0.2s;
+}
+
+/* --- 3x3 Sub-grid Thick Borders --- */
+.cell.border-right-thick {
+    border-right: 3px solid #2c3e50;
+}
+
+.cell.border-bottom-thick {
+    border-bottom: 3px solid #2c3e50;
 }
 
 .cell:focus {
@@ -231,20 +245,6 @@ input:not([readonly]) {
     color: #3498db;            /* blue text (common Sudoku design) */
 }
 
-/* Base styling for all cells */
-.cell {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    font-size: 1.5rem;
-    outline: none;
-    cursor: pointer;
-    background-color: white;
-    color: #3498db;
-    border: 1px solid #bdc3c7;
-    font-weight: normal;
-}
-
 /* Styling for the pre-filled puzzle numbers */
 .cell.fixed {
     background-color: #ecf0f1;
@@ -256,7 +256,7 @@ input:not([readonly]) {
 /* Styling for the currently selected cell */
 .cell.selected {
     background-color: #b3e5fc;
-    border: 2px solid #0288d1;
+    box-shadow: inset 0 0 0 2px #0288d1; 
 }
 
 /* Board Layout */
@@ -266,4 +266,49 @@ input:not([readonly]) {
     gap: 2px;
     justify-content: center;
     margin: 20px;
+}
+
+/* Styling for incorrect input (Rule violation) */
+.cell.incorrect {
+    box-shadow: inset 0 0 0 2px #e74c3c; 
+    background-color: #fadbd8; /* Light red background for better visibility */
+    color: #c0392b;
+}
+
+/* Game Buttons Container */
+.button-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Base style for game buttons */
+.game-btn {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+/* Specific button colors */
+.btn-new {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-new:hover {
+    background-color: #2980b9;
+}
+
+.btn-reset {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-reset:hover {
+    background-color: #c0392b;
 }
