@@ -3,7 +3,7 @@ import { SudokuContext } from '../context/SudokuContext';
 
 export default function Cell({ value, isFixed, index, boardSize }) {
     // Bring in conflicts from Context
-    const { selectedCell, setSelectedCell, updateCell, conflicts } = useContext(SudokuContext);
+    const { selectedCell, setSelectedCell, updateCell, conflicts, isGameWon } = useContext(SudokuContext);
 
     const isSelected = selectedCell === index;
     
@@ -15,11 +15,12 @@ export default function Cell({ value, isFixed, index, boardSize }) {
     const col = index % boardSize;
 
     const handleClick = () => {
+        if (isGameWon) return; // Don't allow selecting if game is won
         setSelectedCell(index);
     };
 
     const handleChange = (e) => {
-        if (isFixed) return;
+        if (isFixed || isGameWon) return; // Don't allow changes if fixed or game is won
 
         const inputValue = e.target.value;
         
@@ -41,7 +42,7 @@ export default function Cell({ value, isFixed, index, boardSize }) {
     // Add the "incorrect" class if there's a rule violation
     let cellClassName = "cell";
     if (isFixed) cellClassName += " fixed";
-    if (isSelected) cellClassName += " selected";
+    if (isSelected && !isGameWon) cellClassName += " selected";
     if (isIncorrect) cellClassName += " incorrect";
 
     // Dynamic thick borders
@@ -58,7 +59,7 @@ export default function Cell({ value, isFixed, index, boardSize }) {
             type="text"
             className={cellClassName} 
             value={value === 0 ? '' : value} 
-            readOnly={isFixed}
+            readOnly={isFixed || isGameWon} // Lock input if it's a fixed cell OR if the game is won    
             onClick={handleClick}
             onChange={handleChange}
         />

@@ -1,9 +1,10 @@
 import React, { useContext, useEffect} from 'react';
 import Board from '../components/Board';
 import { SudokuContext } from '../context/SudokuContext';
+import Timer from '../components/Timer';
 
 export default function NormalGame() {
-    const { startNormalGame, resetGame, board } = useContext(SudokuContext);
+    const { startNormalGame, resetGame, board, isGameWon } = useContext(SudokuContext);
 
    // Generate puzzle only when mounting this page
    useEffect(() => {
@@ -14,11 +15,18 @@ export default function NormalGame() {
     return (
         <div className="game-page-container">
             <h2>Normal Game (9x9)</h2>
-            <p className="timer-text">Time: <span>00:00</span></p>
+            <Timer />
+
+            {/* Display congratulations message if won */}
+            {isGameWon && (
+                <div className="win-message">
+                    🎉 Congratulations! You solved the puzzle! 🎉
+                </div>
+            )}
 
             {board.length > 0 && <Board />}
 
-            {/* 3. Attach onClick events and add CSS classes */}
+            {/* Attach onClick events and add CSS classes */}
             <div className="button-container">
                 <button className="game-btn btn-new" onClick={startNormalGame}>
                     New Game

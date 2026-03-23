@@ -59,11 +59,15 @@ export function SudokuProvider({ children }) {
     const [initialBoard, setInitialBoard] = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
 
+    // add a gameId state to trigger timer resets
+    const [gameId, setGameId] = useState(Date.now());
+
     const startNormalGame = () => {
         const newPuzzle = generateNormalBoard();
         setBoard(newPuzzle);
         setInitialBoard(newPuzzle);
         setSelectedCell(null);
+        setGameId(Date.now());  // Update gameId to reset timer
     };
 
     const startEasyGame = () => {
@@ -71,12 +75,14 @@ export function SudokuProvider({ children }) {
         setBoard(newPuzzle);
         setInitialBoard(newPuzzle);
         setSelectedCell(null);
+        setGameId(Date.now());
     };
 
     // Reset the board to its initial state
     const resetGame = () => {
         setBoard([...initialBoard]);
         setSelectedCell(null);
+        setGameId(Date.now());
     };
 
     const updateCell = (index, value) => {
@@ -88,6 +94,21 @@ export function SudokuProvider({ children }) {
     // Calculate conflicts dynamically every time the board changes
     const conflicts = useMemo(() => getConflictingCells(board), [board]);
 
+    // Check if the game is won
+    const isGameWon = useMemo(() => {
+        // 1. If the board hasn't loaded yet, return false
+        if (board.length === 0) return false;
+        
+        // 2. Are there any empty cells (0) left?
+        const isFull = !board.includes(0);
+        
+        // 3. Are there zero rule violations?
+        const isCorrect = conflicts.length === 0;
+
+        // The game is won if the board is full AND completely correct
+        return isFull && isCorrect;
+    }, [board, conflicts]);
+
     const value = {
         board,
         setBoard,
@@ -98,7 +119,9 @@ export function SudokuProvider({ children }) {
         startNormalGame,
         startEasyGame,
         resetGame,
-        conflicts // Export conflicts so Cell components can read it
+        conflicts, // Export conflicts so Cell components can read it
+        isGameWon, // Export the winning state
+        gameId // Export the gameId
     };
 
     return (
