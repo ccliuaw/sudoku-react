@@ -2,7 +2,7 @@
 
 A fully functional, responsive, and dynamic Sudoku web application built with React. This project implements advanced board generation algorithms, real-time input validation, and modern web application features to provide a seamless puzzle-solving experience.
 
-Start playing: https://ccliuaw.github.io/sudoku-react
+Start playing: https://sudoku-react-5mf4.onrender.com/
 
 ## Core Features
 
