@@ -15,12 +15,12 @@ A fully functional, responsive, and dynamic Sudoku web application built with Re
 
 ## Bonus Points Claimed
 
-### 1. Backtracking Algorithm (4 pts)
+### 1. Backtracking Algorithm
 To guarantee the quality of the puzzles, the application uses a custom Backtracking algorithm (`src/utils/sudokuGenerator.js`). 
 * **Generation:** It first completely fills an empty grid by recursively trying random numbers (1-9) while validating constraints, backtracking when it hits a dead end.
 * **Unique Solution Verification:** When removing numbers to create the puzzle, the algorithm runs a solver function to count the number of valid solutions. If removing a specific number creates multiple possible solutions, it places the number back, ensuring the final puzzle is 100% uniquely solvable.
 
-### 2. LocalStorage Progress Saving (3 pts)
+### 2. LocalStorage Progress Saving
 The application utilizes browser `localStorage` to save the user's progress automatically.
 * If a user accidentally refreshes the page or closes the browser, their current board layout, inputted numbers, and exact timer seconds are preserved.
 * Clicking the "New Game" button clears the local storage and fetches a fresh puzzle.
