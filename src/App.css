@@ -547,3 +547,128 @@ input:not([readonly]) {
 .btn-normal:hover {
     background-color: #d95d0e;
 }
+
+/* --- High Scores / Leaderboard Page --- */
+.leaderboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.leaderboard-table {
+    width: 100%;
+    max-width: 500px;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Keeps the border-radius neat with the colored header */
+}
+
+/* Orange Header */
+.leaderboard-table th {
+    background-color: #e67e22;
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+.leaderboard-table th:first-child,
+.leaderboard-table th:last-child {
+    text-align: center;
+}
+
+.leaderboard-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Automatically apply background color to even rows */
+.leaderboard-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Remove bottom border for the very last row */
+.leaderboard-table tr:last-child td {
+    border-bottom: none;
+}
+
+.rank-cell {
+    text-align: center;
+    font-weight: bold;
+}
+
+.solved-cell {
+    text-align: center;
+}
+
+/* --- Auth Pages (Login / Register) --- */
+.auth-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.form-group input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #3498db;
+}
+
+.auth-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+}
+
+/* --- Auth Footer Link --- */
+.auth-footer {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #34495e;
+}
+
+.auth-link {
+    color: #e67e22;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.auth-link:hover {
+    color: #d35400;
+    text-decoration: underline;
+}
