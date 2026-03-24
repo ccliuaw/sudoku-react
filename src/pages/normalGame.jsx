@@ -28,7 +28,7 @@ export default function NormalGame() {
 
             {/* Attach onClick events and add CSS classes */}
             <div className="button-container">
-                <button className="game-btn btn-new" onClick={startNormalGame}>
+                <button className="game-btn btn-new" onClick={() => startNormalGame(true)}>
                     New Game
                 </button>
                 <button className="game-btn btn-reset" onClick={resetGame}>

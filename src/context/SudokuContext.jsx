@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo } from 'react';
+import React, { createContext, useState, useMemo, useEffect } from 'react';
 import { generateNormalBoard, generateEasyBoard } from '../utils/sudokuGenerator';
 
 export const SudokuContext = createContext();
@@ -58,19 +58,53 @@ export function SudokuProvider({ children }) {
     const [board, setBoard] = useState([]);
     const [initialBoard, setInitialBoard] = useState([]);
     const [selectedCell, setSelectedCell] = useState(null);
+    const [gameId, setGameId] = useState(Date.now()); // add a gameId state to trigger timer resets
 
-    // add a gameId state to trigger timer resets
-    const [gameId, setGameId] = useState(Date.now());
+    // --- LocalStorage Auto-Save Logic ---
+    useEffect(() => {
+        if (board.length === 81) {
+            localStorage.setItem('sudoku_save_normal', JSON.stringify({ board, initialBoard }));
+        } else if (board.length === 36) {
+            localStorage.setItem('sudoku_save_easy', JSON.stringify({ board, initialBoard }));
+        }
+    }, [board, initialBoard]);
 
-    const startNormalGame = () => {
+    // --- Game Initialization Logic ---
+    // isNew = false means try to load from localStorage first
+    // isNew = true means force a brand new puzzle (for "New Game" button)
+    const startNormalGame = (isNew = false) => {
+        if (!isNew) {
+            const saved = localStorage.getItem('sudoku_save_normal');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                setBoard(parsed.board);
+                setInitialBoard(parsed.initialBoard);
+                setGameId('loaded_normal'); // Special string to tell the timer to resume
+                setSelectedCell(null);
+                return;
+            }
+        }
+
         const newPuzzle = generateNormalBoard();
         setBoard(newPuzzle);
         setInitialBoard(newPuzzle);
         setSelectedCell(null);
-        setGameId(Date.now());  // Update gameId to reset timer
+        setGameId(Date.now()); // New timestamp tells the timer to reset to 0
     };
 
-    const startEasyGame = () => {
+    const startEasyGame = (isNew = false) => {
+        if (!isNew) {
+            const saved = localStorage.getItem('sudoku_save_easy');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                setBoard(parsed.board);
+                setInitialBoard(parsed.initialBoard);
+                setGameId('loaded_easy');
+                setSelectedCell(null);
+                return;
+            }
+        }
+
         const newPuzzle = generateEasyBoard();
         setBoard(newPuzzle);
         setInitialBoard(newPuzzle);
@@ -98,10 +132,10 @@ export function SudokuProvider({ children }) {
     const isGameWon = useMemo(() => {
         // 1. If the board hasn't loaded yet, return false
         if (board.length === 0) return false;
-        
+
         // 2. Are there any empty cells (0) left?
         const isFull = !board.includes(0);
-        
+
         // 3. Are there zero rule violations?
         const isCorrect = conflicts.length === 0;
 

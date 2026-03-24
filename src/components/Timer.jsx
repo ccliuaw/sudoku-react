@@ -3,31 +3,45 @@ import { SudokuContext } from '../context/SudokuContext';
 
 export default function Timer() {
     // Bring in the states we need from Context
-    const { isGameWon, gameId } = useContext(SudokuContext);
+    const { isGameWon, gameId, board } = useContext(SudokuContext);
     const [seconds, setSeconds] = useState(0);
 
-    // 1. Reset the timer to 0 whenever gameId changes (New Game / Reset)
+    // Determine the mode based on board length
+    const mode = board.length === 81 ? 'normal' : 'easy';
+
+    // 1. Reset or Resume timer based on the gameId from Context
     useEffect(() => {
-        setSeconds(0);
+        if (gameId === 'loaded_normal') {
+            const savedTime = localStorage.getItem('sudoku_time_normal');
+            setSeconds(savedTime ? parseInt(savedTime, 10) : 0);
+        } else if (gameId === 'loaded_easy') {
+            const savedTime = localStorage.getItem('sudoku_time_easy');
+            setSeconds(savedTime ? parseInt(savedTime, 10) : 0);
+        } else {
+            // If it's a timestamp (meaning New Game or Reset was clicked), start from 0
+            setSeconds(0);
+        }
     }, [gameId]);
 
-    // 2. Handle the interval logic
+    // 2. Ticking Logic & Auto-Save
     useEffect(() => {
         let interval = null;
 
-        // If the game is NOT won, start counting
-        if (!isGameWon) {
+        if (!isGameWon && board.length > 0) {
             interval = setInterval(() => {
-                setSeconds(prev => prev + 1);
+                setSeconds(prev => {
+                    const newTime = prev + 1;
+                    // Save the new time to localStorage every second
+                    localStorage.setItem(`sudoku_time_${mode}`, newTime.toString());
+                    return newTime;
+                });
             }, 1000);
         } else if (isGameWon && interval) {
-            // If the game IS won, stop the timer
             clearInterval(interval);
         }
 
-        // Cleanup function to prevent memory leaks
         return () => clearInterval(interval);
-    }, [isGameWon, gameId]);
+    }, [isGameWon, board.length, mode]);
 
     // Helper function to format seconds into MM:SS
     const formatTime = (totalSeconds) => {

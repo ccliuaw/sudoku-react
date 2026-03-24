@@ -26,7 +26,7 @@ export default function EasyGame() {
             {board.length > 0 && <Board />}
 
             <div className="button-container">
-                <button className="game-btn btn-new" onClick={startEasyGame}>New Game</button>
+                <button className="game-btn btn-new" onClick={() => startEasyGame(true)}>New Game</button>
                 <button className="game-btn btn-reset" onClick={resetGame}>Reset</button>
             </div>
         </div>
